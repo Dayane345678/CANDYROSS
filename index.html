@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>CandyRoss</title>
+</head>
+<body>
+
+<!-- Tela inicial, os divs agrupam as variedades de elementos que fazem parte do jogo -->
+<div id="start-screen"> <!-- o inicio do jogo -->
+  <h1> 🍭CandyRoss🍭</h1> <!-- título do nosso jogo-->
+  <button id="play-btn">Play</button> <!-- Botão de start do jogo -->
+</div>
+
+<h1 style="display:none;" id="title-game"> 🍭CandyRoss🍭</h1> <!-- título principal da tela do jogo -->
+<div id="top-info" style="display:none;">
+  <div id="score">Pontuação: 0</div> <!-- conta a pontuação do usuário -->
+  <div id="time">Tempo: 0:00 min</div> <!-- marca o tempo de jogo -->
+</div>
+<div id="game-container" style="display:none;">
+  <canvas id="tetris" width="240" height="400"></canvas>
+  <div id="gameover">
+    <div>🍭GAME OVER🍭</div> <!--- faz a interação de overlay de game over do jogo -->
+    <div id="finalScore">Pontuação: 0</div> <!--- conta a pontuação total no final do jogo-->
+    <div id="finalTime">Tempo: 0:00 min</div> <!--- conta o total final do tempo de jogo-->
+    <button id="restart">Replay</button> <!--- botão pra reiniciar o game-->
+  </div>
+  <div id="sidebar"> <!-- barra lateral do game-->
+    <h2 style="color:#ff1a8c; margin:0;">Próximo</h2> <!--- título do "next" próximo bloquinho que aparece no jogo-->
+    <canvas id="next" width="100" height="100"></canvas> <!--- mostra o próximo bloquinho que vai cair-->
+  </div>
+</div>
+
+<div id="controls" style="display:none;"> <!--- Essa parte e os botões de controle do jogo pra mexer nos bloquinhos -->
+  <div class="empty"></div>
+  <button class="control-btn" id="rotate">⟳</button>
+  <div class="empty"></div>
+  <button class="control-btn" id="left">⟵</button>
+  <button class="control-btn" id="down">⟱</button>
+  <button class="control-btn" id="right">⟶</button>
+</div>  
