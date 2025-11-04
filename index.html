@@ -1,261 +1,787 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>CandyRoss</title>
-<style>
-  body {
-    margin: 0;
-    background-color: #ffe6f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> 🍭 Candy Ross 🍭</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ======================================================= */
+        /* ESTILOS BASE DO JOGO */
+        /* ======================================================= */
+        body {
+            margin: 0;
+            background-color: #ffe6f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            min-height: 10vh; /* Ajustado para melhor visualização em telas pequenas */
+            padding: 20px 0;
+        }
+        
+        /* Tela inicial */
+        #start-screen {
+            position: fixed;
+            top:0;
+            left:0;
+            width:100vw;
+            height:100vh;
+            background-color:#ffe6f0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            z-index:100;
+        }
+        #start-screen h1 {
+            font-size: clamp(30px, 8vw, 50px);
+            color: #ff4da6;
+            margin-bottom: 40px;
+        }
+        #play-btn {
+            width: 150px;
+            height: 150px;
+            font-size: 24px;
+            background-color: #ff66b2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px #cc0066;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        #play-btn:hover { background-color: #ff80c0; }
+        #play-btn:active { transform: translateY(2px); box-shadow: 0 2px #cc0066; }
 
-  /* Tela inicial */
-  #start-screen {
-    position: fixed;
-    top:0;
-    left:0;
-    width:100vw;
-    height:100vh;
-    background-color:#ffe6f0;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    z-index:100;
-  }
-  #start-screen h1 {
-    font-size: 50px;
-    color: #ff4da6;
-    margin-bottom: 40px;
-  }
-  #play-btn {
-    width: 150px;
-    height: 150px;
-    font-size: 24px;
-    background-color: #ff66b2;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 4px #cc0066;
-  }
-  #play-btn:active { transform: translateY(2px); box-shadow: 0 2px #cc0066; }
+        h1 { color: #ff4da6; margin: 10px 0; }
 
-  h1 { color: #ff4da6; margin: 10px 0; }
+        #top-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: #cc0066;
+            font-weight: bold;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 280px; /* Ajuste para centralizar o layout */
+        }
+        #game-stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 20px;
+            font-size: 18px;
+        }
+        #player-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            background: #ffcce0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 16px;
+        }
+        #avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ff4da6;
+            cursor: pointer;
+        }
+        #player-name-display {
+            font-weight: bold;
+            color: #cc0066;
+        }
 
-  #top-info {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    font-size: 20px;
-    color: #cc0066;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  #game-container {
-    position: relative;
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-  }
-  canvas {
-    background-color: #ffb3d9;
-    border: 5px solid #ff4da6;
-    border-radius: 12px;
-  }
-  #sidebar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  #next {
-    background-color: #ffe6f0;
-    border: 3px solid #ff4da6;
-    border-radius: 10px;
-  }
-  #controls {
-    margin-top: 15px;
-    display: grid;
-    grid-template-columns: repeat(3, 70px);
-    grid-template-rows: repeat(2, 70px);
-    gap: 10px;
-    justify-items: center;
-  }
-  button.control-btn {
-    width: 70px;
-    height: 70px;
-    font-size: 20px;
-    background-color: #ff66b2;
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px #cc0066;
-    transition: 0.1s;
-  }
-  button.control-btn:active { transform: translateY(3px); box-shadow: 0 1px #cc0066; }
-  .empty { visibility: hidden; }
 
-  /* Overlay Game Over */
-  #gameover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 240px;
-    height: 400px;
-    background: rgba(0, 0, 0, 0.75);
-    border-radius: 12px;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    visibility: hidden;
-    z-index: 10;
-  }
-  #restart {
-    padding: 10px 20px;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    background: #ff4da6;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px #660033;
-  }
-  #restart:active { transform: translateY(2px); box-shadow: 0 2px #660033; }
-</style>
+        #game-container {
+            position: relative;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        canvas {
+            background-color: #ffb3d9;
+            border: 5px solid #ff4da6;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        #sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        #next {
+            background-color: #ffe6f0;
+            border: 3px solid #ff4da6;
+            border-radius: 10px;
+            padding: 5px;
+        }
+        
+        #controls {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            grid-template-rows: repeat(2, 70px);
+            gap: 10px;
+            justify-items: center;
+        }
+        button.control-btn {
+            width: 70px;
+            height: 70px;
+            font-size: 24px;
+            background-color: #ff66b2;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px #cc0066;
+            transition: 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        button.control-btn:hover { background-color: #ff80c0; }
+        button.control-btn:active { transform: translateY(3px); box-shadow: 0 1px #cc0066; }
+        .empty { visibility: hidden; }
+
+        /* Estilo específico para o botão de pausa */
+        #pause-btn {
+            grid-column: 1 / 4;
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+            font-size: 18px;
+            box-shadow: 0 4px #99004d;
+        }
+
+
+        /* Overlay Game Over */
+        #gameover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.75);
+            border-radius: 12px;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            visibility: hidden;
+            z-index: 10;
+        }
+        #restart {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #ff4da6;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px #660033;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        #restart:hover { background-color: #ff80c0; }
+        #restart:active { transform: translateY(2px); box-shadow: 0 2px #660033; }
+        
+        /* Estilos do Pop-up */
+        #instructions {
+            min-width: 280px; /* Aumentado para acomodar melhor o conteúdo */
+            max-width: 400px;
+            max-height: 90vh; 
+            border: none;
+            border-radius: 12px;
+            padding: 25px;
+            background: #ffcce0;
+            box-shadow: 0 8px 20px rgba(255, 77, 166, 0.5);
+            overflow-y: auto;
+            margin: auto; 
+            color: #333;
+            font-size: 14px;
+        }
+        #instructions h2 {
+            color: #cc0066;
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ff4da6;
+            padding-bottom: 5px;
+        }
+        #instructions h3 {
+             color: #ff4da6;
+             font-size: 18px;
+             margin-top: 15px;
+             margin-bottom: 8px;
+        }
+        #instructions ul {
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+        #instructions button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            background: #ff4da6;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+        #instructions button:hover { background-color: #cc0066; }
+        #instructions::backdrop {
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Estilos para links dos desenvolvedores */
+        #dev-links a {
+            color: #cc0066;
+            text-decoration: none;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: #ffe6f0;
+            transition: background-color 0.15s;
+        }
+        #dev-links a:hover {
+            background-color: #ffb3d9;
+            text-decoration: underline;
+        }
+
+        /* ======================================================= */
+        /* ESTILOS PARA EFEITO DE EMOJI */
+        /* ======================================================= */
+        #candy-notifications {
+            position: absolute;
+            width: 240px; 
+            height: 400px;
+            top: 5px; 
+            left: 5px; 
+            pointer-events: none;
+            z-index: 20;
+        }
+        .candy-emoji {
+            position: absolute;
+            font-size: 24px;
+            animation: float-up 1s ease-out forwards;
+            opacity: 0;
+            /* Centraliza o emoji dentro do ponto de coordenada (gridX, gridY) */
+            transform: translate(-50%, -50%); 
+        }
+        @keyframes float-up {
+            0% {
+                transform: translate(-50%, -50%) scale(1); /* Posição inicial centralizada */
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -70px) scale(1.2); /* Sobe e cresce um pouco */
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -100px) scale(0.5); /* Continua subindo e desaparece */
+                opacity: 0;
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            body { padding-top: 10px; padding-bottom: 10px; }
+            #game-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            #sidebar {
+                flex-direction: row;
+                justify-content: space-around;
+                width: 100%;
+                max-width: 240px; 
+                order: -1; 
+            }
+            #controls {
+                grid-template-columns: repeat(3, 1fr);
+                width: 100%;
+                max-width: 240px;
+            }
+            button.control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            #pause-btn {
+                 width: 100%; 
+            }
+        }
+    </style>
 </head>
 <body>
 
-<!-- Tela inicial, os divs agrupam as variedades de elementos que fazem parte do jogo -->
-<div id="start-screen"> <!-- o inicio do jogo -->
-  <h1> 🍭CandyRoss🍭</h1> <!-- título do nosso jogo-->
-  <button id="play-btn">Play</button> <!-- Botão de start do jogo -->
-</div>
+    <!-- Estrutura do Jogo -->
+    <div id="start-screen"> 
+        <h1> 🍭 Candy Ross 🍭</h1> 
+        <button id="play-btn">Jogar</button> 
+        <button id="show-instructions" class="mt-8 text-lg bg-transparent text-[#ff4da6] border-2 border-[#ff4da6] py-2 px-4 rounded-lg hover:bg-[#ff4da6] hover:text-white transition">Instruções</button>
+    </div>
 
-<h1 style="display:none;" id="title-game"> 🍭CandyRoss🍭</h1> <!-- título principal da tela do jogo -->
-<div id="top-info" style="display:none;">
-  <div id="score">Pontuação: 0</div> <!-- conta a pontuação do usuário -->
-  <div id="time">Tempo: 0:00 min</div> <!-- marca o tempo de jogo -->
-</div>
-<div id="game-container" style="display:none;">
-  <canvas id="tetris" width="240" height="400"></canvas>
-  <div id="gameover">
-    <div>🍭GAME OVER🍭</div> <!--- faz a interação de overlay de game over do jogo -->
-    <div id="finalScore">Pontuação: 0</div> <!--- conta a pontuação total no final do jogo-->
-    <div id="finalTime">Tempo: 0:00 min</div> <!--- conta o total final do tempo de jogo-->
-    <button id="restart">Replay</button> <!--- botão pra reiniciar o game-->
-  </div>
-  <div id="sidebar"> <!-- barra lateral do game-->
-    <h2 style="color:#ff1a8c; margin:0;">Próximo</h2> <!--- título do "next" próximo bloquinho que aparece no jogo-->
-    <canvas id="next" width="100" height="100"></canvas> <!--- mostra o próximo bloquinho que vai cair-->
-  </div>
-</div>
+    <h1 style="display:none;" id="title-game"> 🍭 Candy Ross 🍭</h1>
+    <div id="top-info" style="display:none;">
+        <div id="player-profile">
+            <img id="avatar" src="https://placehold.co/35x35/ff4da6/ffffff?text=A" alt="Avatar do Jogador">
+            <span id="player-name-display">Jogador</span>
+            <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+        </div>
+        <div id="game-stats">
+            <span id="score">Pontuação: 0</span> 
+            <span id="time">Tempo: 0:00 min</span>
+        </div>
+    </div>
+    
+    <div id="game-container" style="display:none;">
+        <!-- Container para as notificações de emoji -->
+        <div id="candy-notifications"></div> 
+        
+        <canvas id="tetris" width="240" height="400"></canvas>
+        <div id="gameover">
+            <span>GAME OVER</span>
+            <span id="finalScore">Pontuação: 0</span>
+            <span id="finalTime">Tempo: 0:00 min</span>
+            <button id="restart">Replay</button>
+        </div>
+        <div id="sidebar">
+            <h2 style="color:#ff1a8c; margin:0;">Próximo</h2>
+            <canvas id="next" width="100" height="100"></canvas>
+        </div>
+    </div>
 
-<div id="controls" style="display:none;"> <!--- Essa parte e os botões de controle do jogo pra mexer nos bloquinhos -->
-  <div class="empty"></div>
-  <button class="control-btn" id="rotate">⟳</button>
-  <div class="empty"></div>
-  <button class="control-btn" id="left">⟵</button>
-  <button class="control-btn" id="down">⟱</button>
-  <button class="control-btn" id="right">⟶</button>
-</div>  
+    <div id="controls" style="display:none;">
+        <div class="empty"></div>
+        <button class="control-btn" id="rotate">⟳</button>
+        <div class="empty"></div>
+        <button class="control-btn" id="left">⟵</button>
+        <button class="control-btn" id="down">⟱</button>
+        <button class="control-btn" id="right">⟶</button>
+        <button class="control-btn" id="pause-btn" style="grid-column: 1 / 4;">⏸️ Pausar</button>
+    </div>
 
-<script>
-const playBtn = document.getElementById("play-btn"); // Faz a ação de iniciar o jogo a partir do momento em que o botão e clicado 
-playBtn.onclick = () => {
-  document.getElementById("start-screen").style.display = "none"; // esconde a tela inicial 
-  document.getElementById("title-game").style.display = "block"; // exibe o título do jogo
-  document.getElementById("top-info").style.display = "flex"; // mostra a pontuação e tempo 
-  document.getElementById("game-container").style.display = "flex"; // mostra a página principal do jogo 
-  document.getElementById("controls").style.display = "grid"; // mostra os botões de interação do jogo
-  startGame();
-};
+    <!-- POP-UP DE INSTRUÇÕES (ELEMENTO <DIALOG>) -->
+    <dialog id="instructions">
+        <h2>Instruções do Jogo</h2>
+        
+        <input 
+            type="text" 
+            id="playerNameInput" 
+            placeholder="Digite seu nome (máx. 10)" 
+            maxlength="10" 
+            class="p-2 border border-[#ff4da6] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff4da6] w-full mt-2 mb-4 text-[#333]">
+        <h3><strong>BEM-VINDOS AO CANDY ROSS! Neste desafio, cada bloco equivale a um pirulito. O seu objetivo é quebrá-los.<strong></h3>
+        <p>Este é um jogo de encaixar blocos. Seu objetivo principal é completar linhas horizontais (10 pontos) e, principalmente, completar um quadrado sólido de 5x5 blocos(super pontos) em qualquer lugar da arena!</p>
 
-function startGame() {
-  const canvas = document.getElementById('tetris'); // montando a página principal do game
-  const context = canvas.getContext('2d');
-  context.scale(20,20);
+        <h3><br><strong>Controles</strong></br></h3>
+        <p><br><strong>Use as teclas de seta ou os botões na tela:</strong></br></p>
+        <ul>
+            <li><strong>Seta para baixo:</strong>queda suave.</li>
+            <li><strong>Seta esquerda:</strong> Mover para a esquerda
+            <li><strong>Seta direita:</strong> Mover para a direita
+            <li><strong>Seta para Cima:</strong> Girar.</li>
+            <li><strong>Botão Pausar:</strong> Pausar/Retomar o jogo.</li>
+        </ul>
+        
+        <!-- NOVA SEÇÃO: LINKS DOS DESENVOLVEDORES -->
+        <h3>Desenvolvedores</h3>
+        <div id="dev-links">
+            <!-- Dayane345678 -->
+            <a href="https://github.com/Dayane345678" target="_blank">
+                Dayane Gabriely (GitHub)
+            </a>
+            <!-- bnersur -->
+            <a href="https://github.com/bnersur" target="_blank">
+                Abner Ferreira (GitHub)
+            </a>
+            <!-- Afromariaa -->
+            <a href="https://github.com/Afromariaa" target="_blank">
+                Maria Clara Meira (GitHub)
+            </a>
+        </div>
+        
+        <button id="close">FECHAR</button>
+    </dialog>
 
-  const nextCanvas = document.getElementById('next');
-  const nextCtx = nextCanvas.getContext('2d');
-  nextCtx.scale(20,20);
+    <script>
+        // Variáveis globais de estado
+        let gameActive = false;
+        let isPaused = false;
+        let playerName = "Jogador";
+        let avatarURL = "https://placehold.co/35x35/ff4da6/ffffff?text=A";
 
-  const overlay = document.getElementById("gameover");
-  const finalScore = document.getElementById("finalScore");
-  const finalTime = document.getElementById("finalTime");
+        document.addEventListener('DOMContentLoaded', () => {
+            const instructions = document.getElementById('instructions');
+            const closeInstructionsBtn = document.getElementById('close'); 
+            const showInstructionsBtn = document.getElementById('show-instructions');
+            const playBtn = document.getElementById('play-btn');
+            const startScreen = document.getElementById('start-screen');
+            const playerNameInput = document.getElementById('playerNameInput');
+            const avatarImg = document.getElementById('avatar');
+            const avatarInput = document.getElementById('avatar-input');
+            
+            // 1. Inicializa o nome do jogador no input e display
+            if (playerNameInput) playerNameInput.value = playerName;
+            if (document.getElementById('player-name-display')) document.getElementById('player-name-display').innerText = playerName;
 
-  const PIECE_ID = { T:1, O:2, L:3, J:4, I:5, S:6, Z:7 };
-  const PIECES = {
-    T: [[0,1,0],[1,1,1]],
-    O: [[1,1],[1,1]],
-    L: [[0,0,1],[1,1,1]],
-    J: [[1,0,0],[1,1,1]],
-    I: [[1,1,1,1]],
-    S: [[0,1,1],[1,1,0]],
-    Z: [[1,1,0],[0,1,1]],
-  }; // Os bloquinhos do jogo, 1 representa um quadradinho preenchido o 0 representa o contrário, as letras pra facilitar mudar os blocos de cores 
-  const colors = [null,"#ff80bf","#ff4da6","#ff99cc","#ff66b2","#ff1a8c","#ffb3d9","#e60073"];
-  const arena = createMatrix(12,20); // variável para o tabuleiro do jogo 
-  let score = 0;  // variável dos pontos 
-  let time = 0; // variável do tempo
-  let timerInterval; 
-  let gameRunning = true; // identificar se o jogo está ativo ou já acabou 
+            // 2. Lógica de Avatar
+            if (avatarImg && avatarInput) {
+                avatarImg.onclick = () => avatarInput.click();
+                avatarInput.onchange = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const newAvatarURL = URL.createObjectURL(file);
+                        avatarURL = newAvatarURL;
+                        avatarImg.src = newAvatarURL;
+                    }
+                };
+            }
 
-  function createMatrix(w,h){ const m=[]; while(h--) m.push(new Array(w).fill(0)); return m; } // cria o tabuleiro do jogo
-  function collide(arena, player){ const m=player.matrix,o=player.pos; for(let y=0;y<m.length;y++){ for(let x=0;x<m[y].length;x++){ if(m[y][x]!==0 && ((arena[y+o.y] && arena[y+o.y][x+o.x])!==0)) return true; } } return false; } // verifica se os bloquinhos do jogador colidiu ou não 
-  function merge(arena, player){ player.matrix.forEach((row,y)=>{ row.forEach((val,x)=>{ if(val!==0) arena[y+player.pos.y][x+player.pos.x]=val; }); }); } // junta as peças com o tabuleiro 
-  function randomPiece(){ const types='TJLOSZI'; return types[types.length*Math.random()|0]; } // escolhe aleatoriamente uma nova peça 
-  function createPiece(type){ return PIECES[type].map(row=>row.map(v=>v?PIECE_ID[type]:0)); } // Então e responsável por alterar as cores dos bloquinhos de acordo com as letras
+            // 3. Lógica de Pop-up (Abrir e Fechar)
+            if(showInstructionsBtn) showInstructionsBtn.addEventListener('click', () => { if(instructions) instructions.showModal(); });
+            // Abre as instruções 2 segundos após o carregamento, se a tela inicial estiver visível.
+            setTimeout(() => { if(instructions && startScreen.style.display !== 'none'){ instructions.showModal(); } }, 2000);
+            if (closeInstructionsBtn && instructions) closeInstructionsBtn.addEventListener('click', () => { instructions.close(); });
+            if (instructions) instructions.addEventListener('click', (event) => { if (event.target === instructions) { instructions.close(); } });
 
-  function rotate(matrix,dir=1){ const rows=matrix.length,cols=matrix[0].length,res=Array.from({length:cols},()=>Array(rows).fill(0)); for(let y=0;y<rows;y++) for(let x=0;x<cols;x++) if(dir>0) res[x][rows-1-y]=matrix[y][x]; else res[cols-1-x][y]=matrix[y][x]; return res; } // gira as pecinhas
-// movimenta as peças dentro do jogo
-  function playerDrop(){ if(!gameRunning) return; player.pos.y++; if(collide(arena,player)){ player.pos.y--; merge(arena,player); arenaSweep(); playerReset(); } dropCounter=0; }
-  function playerMove(dir){ if(!gameRunning) return; player.pos.x+=dir; if(collide(arena,player)) player.pos.x-=dir; }
-  function playerRotate(dir=1){ if(!gameRunning) return; const pos=player.pos.x; const rotated=rotate(player.matrix,dir); player.matrix=rotated; let offset=0; while(collide(arena,player)){ offset=offset?-(offset+(offset>0?1:-1)):1; player.pos.x+=offset; if(Math.abs(offset)>player.matrix[0].length+2){ player.matrix=rotate(player.matrix,-dir); player.pos.x=pos; return; } } }
+            // 4. Lógica da Tela Inicial
+            playBtn.onclick = () => {
+                // Captura o nome inserido
+                const name = playerNameInput.value.trim();
+                playerName = name.length > 0 ? name.substring(0, 10) : "Jogador";
+                document.getElementById('player-name-display').innerText = playerName;
+                
+                document.getElementById("start-screen").style.display = "none";
+                document.getElementById("title-game").style.display = "block";
+                document.getElementById("top-info").style.display = "flex";
+                document.getElementById("game-container").style.display = "flex";
+                document.getElementById("controls").style.display = "grid";
+                gameActive = true; 
+                startGame();
+            };
+        });
 
-  function arenaSweep(){ let rowCount=1; outer: for(let y=arena.length-1;y>=0;y--){ for(let x=0;x<arena[y].length;x++) if(arena[y][x]===0) continue outer; arena.splice(y,1); arena.unshift(new Array(arena[0].length).fill(0)); score+=rowCount*10; rowCount*=2; } updateScore(); } // verifica se a linha está correta pra marcar pontos 
-  // desenha e redesenha as matrizes 
-  function drawBlock(ctx,x,y,color){ ctx.fillStyle=color; ctx.fillRect(x,y,1,1); ctx.strokeStyle="#7a004d"; ctx.lineWidth=0.06; ctx.strokeRect(x+0.03,y+0.03,0.94,0.94); ctx.fillStyle="rgba(0,0,0,0.12)"; ctx.fillRect(x+0.65,y+0.65,0.32,0.32); }
-  function drawMatrix(matrix,offset,ctx=context){ matrix.forEach((row,y)=>{ row.forEach((val,x)=>{ if(val!==0) drawBlock(ctx,x+offset.x,y+offset.y,colors[val]); }); }); }
-  function draw(){ context.fillStyle="#ffe6f0"; context.fillRect(0,0,canvas.width,canvas.height); drawMatrix(arena,{x:0,y:0}); drawMatrix(player.matrix,player.pos); }
-  function drawNext(){ nextCtx.fillStyle="#ffe6f0"; nextCtx.fillRect(0,0,nextCanvas.width,nextCanvas.height); const gridW=(nextCanvas.width/20)|0; const gridH=(nextCanvas.height/20)|0; const offX=Math.max(0,((gridW-nextPiece[0].length)/2)|0); const offY=Math.max(0,((gridH-nextPiece.length)/2)|0); drawMatrix(nextPiece,{x:offX,y:offY},nextCtx); }
+        // =======================================================
+        // LÓGICA DO JOGO (FUNÇÃO STARTGAME)
+        // =======================================================
+        function startGame() {
+            const canvas = document.getElementById('tetris'); 
+            const context = canvas.getContext('2d');
+            context.scale(20,20);
 
-  function updateScore(){ document.getElementById("score").innerText="Pontuação: "+score; }  // atualiza a pontuação 
-  function updateTime(){ const minutes=Math.floor(time/60); const seconds=time%60; const secDisplay=seconds<10?"0"+seconds:seconds; document.getElementById("time").innerText=`Tempo: ${minutes}:${secDisplay} min`; } // atualiza o tempo de jogo
+            const nextCanvas = document.getElementById('next');
+            const nextCtx = nextCanvas.getContext('2d');
+            nextCtx.scale(20,20);
 
-  function playerReset(){ player.matrix=nextPiece; nextPiece=createPiece(randomPiece()); player.pos.y=0; player.pos.x=(arena[0].length/2|0)-(player.matrix[0].length/2|0); if(collide(arena,player)) gameOver(); drawNext(); }
-  function gameOver(){ gameRunning=false; clearInterval(timerInterval); overlay.style.visibility="visible"; finalScore.innerText="Pontuação: "+score; const minutes=Math.floor(time/60); const seconds=time%60; const secDisplay=seconds<10?"0"+seconds:seconds; finalTime.innerText=`Tempo: ${minutes}:${secDisplay} min`; }
-  function restartGame(){ overlay.style.visibility="hidden"; arena.forEach(row=>row.fill(0)); score=0; time=0; updateScore(); updateTime(); gameRunning=true; startTimer(); playerReset(); } // reinicia e reseta o game 
+            const overlay = document.getElementById("gameover");
+            const finalScore = document.getElementById("finalScore");
+            const finalTime = document.getElementById("finalTime");
+            const pauseButton = document.getElementById('pause-btn');
 
-  let dropCounter=0; let dropInterval=1000; let lastTime=0;  // variáveis de controle de queda e peça atual
-  const player={pos:{x:0,y:0},matrix:null}; 
-  let nextPiece=createPiece(randomPiece());
+            const candyNotifications = document.getElementById('candy-notifications');
+            const BLOCK_SIZE = 20; 
 
-  function startTimer(){ clearInterval(timerInterval); timerInterval=setInterval(()=>{ if(gameRunning){ time++; updateTime(); } },1000); }
-  function update(timeNow=0){ const delta=timeNow-lastTime; lastTime=timeNow; if(gameRunning){ dropCounter+=delta; if(dropCounter>dropInterval) playerDrop(); draw(); } requestAnimationFrame(update); }
+            const PIECE_ID = { T:1, O:2, L:3, J:4, I:5, S:6, Z:7 };
+            const PIECES = {
+                T: [[0,1,0],[1,1,1]], O: [[1,1],[1,1]], L: [[0,0,1],[1,1,1]], J: [[1,0,0],[1,1,1]], 
+                I: [[1,1,1,1]], S: [[0,1,1],[1,1,0]], Z: [[1,1,0],[0,1,1]],
+            }; 
+            const colors = [null,"#ff80bf","#ff4da6","#ff99cc","#ff66b2","#ff1a8c","#ffb3d9","#e60073"];
+            const arena = createMatrix(12,20); 
+            let score = 0;
+            let time = 0; 
+            let timerInterval;
+            let gameRunning = true; 
+            isPaused = false; // Reset state
 
-  document.getElementById("restart").onclick=restartGame; // botões de controle principais do jogo
-  playerReset(); startTimer(); update();
+            function createMatrix(w,h){ const m=[]; while(h--) m.push(new Array(w).fill(0)); return m; } 
+            function collide(arena, player){ const m=player.matrix,o=player.pos; for(let y=0;y<m.length;y++){ for(let x=0;x<m[y].length;x++){ if(m[y][x]!==0 && ((arena[y+o.y] && arena[y+o.y][x+o.x])!==0)) return true; } } return false; } 
+            function merge(arena, player){ player.matrix.forEach((row,y)=>{ row.forEach((val,x)=>{ if(val!==0) arena[y+player.pos.y][x+player.pos.x]=val; }); }); } 
+            function randomPiece(){ const types='TJLOSZI'; return types[types.length*Math.random()|0]; } 
+            function createPiece(type){ return PIECES[type].map(row=>row.map(v=>v?PIECE_ID[type]:0)); } 
 
-  document.addEventListener("keydown",(e)=>{ if(!gameRunning) return; if(e.key==="ArrowLeft") playerMove(-1); else if(e.key==="ArrowRight") playerMove(1); else if(e.key==="ArrowDown") playerDrop(); else if(e.key==="ArrowUp") playerRotate(1); });
-  document.getElementById("left").onclick=()=>playerMove(-1);
-  document.getElementById("right").onclick=()=>playerMove(1);
-  document.getElementById("down").onclick=()=>playerDrop();
-  document.getElementById("rotate").onclick=()=>playerRotate(1);
-}
-</script>
+            function rotate(matrix,dir=1){ const rows=matrix.length,cols=matrix[0].length,res=Array.from({length:cols},()=>Array(rows).fill(0)); for(let y=0;y<rows;y++) for(let x=0;x<cols;x++) if(dir>0) res[x][rows-1-y]=matrix[y][x]; else res[cols-1-x][y]=matrix[y][x]; return res; } 
+            
+            function playerMove(dir){ if(!gameRunning || isPaused) return; player.pos.x+=dir; if(collide(arena,player)) player.pos.x-=dir; }
+            function playerRotate(dir=1){ if(!gameRunning || isPaused) return; const pos=player.pos.x; const rotated=rotate(player.matrix,dir); player.matrix=rotated; let offset=0; while(collide(arena,player)){ offset=offset?-(offset+(offset>0?1:-1)):1; player.pos.x+=offset; if(Math.abs(offset)>player.matrix[0].length+2){ player.matrix=rotate(player.matrix,-dir); player.pos.x=pos; return; } } }
+
+            // Lógica de linha completa (10 pontos fixos por linha)
+            function arenaSweep(){ 
+                let linesCleared = 0;
+                outer: for(let y=arena.length-1;y>=0;y--){ 
+                    for(let x=0;x<arena[y].length;x++) 
+                        if(arena[y][x]===0) continue outer; 
+                    
+                    // Linha completa!
+                    arena.splice(y,1); 
+                    arena.unshift(new Array(arena[0].length).fill(0)); 
+                    
+                    // NOVO: Mostra o emoji de docinho para limpeza de linha
+                    // Mostra no centro da linha limpa (coluna 6 do grid 12x20)
+                    showCandyEmoji(6, y); 
+
+                    linesCleared++; 
+                    y++; // Recheca a linha que acabou de descer
+                } 
+                
+                // Pontuação fixa: 10 pontos por linha, conforme solicitado
+                if (linesCleared > 0) {
+                    score += linesCleared * 10; 
+                }
+
+                updateScore(); 
+            } 
+
+            // FUNÇÃO PARA MOSTRAR O EFEITO DE LIMPEZA (DOCINHO)
+            function showCandyEmoji(gridX, gridY) {
+                const candy = document.createElement('div');
+                candy.className = 'candy-emoji';
+                candy.innerText = '🍭'; 
+                
+                // Converte coordenadas do grid para coordenadas de pixel para a animação
+                candy.style.left = `${gridX * BLOCK_SIZE + (BLOCK_SIZE / 2)}px`;
+                candy.style.top = `${gridY * BLOCK_SIZE + (BLOCK_SIZE / 2)}px`;
+
+                candyNotifications.appendChild(candy); 
+
+                setTimeout(() => {
+                    candy.remove();
+                }, 1000);
+            }
+            
+            // FUNÇÃO PARA FAZER OS BLOCOS CAÍREM (GRAVIDADE SIMPLES DE COLUNA)
+            function applyGravity() {
+                let moved = false;
+                for (let x = 0; x < arena[0].length; x++) {
+                    let writeY = arena.length - 1; 
+                    for (let y = arena.length - 1; y >= 0; y--) {
+                        if (arena[y][x] !== 0) {
+                            if (y !== writeY) {
+                                arena[writeY][x] = arena[y][x]; 
+                                arena[y][x] = 0; 
+                                moved = true;
+                            }
+                            writeY--; 
+                        }
+                    }
+                }
+                return moved;
+            }
+
+            // FUNÇÃO PRINCIPAL PARA ENCONTRAR E LIMPAR GRUPOS DE 5X5
+            function findAndClear5x5() {
+                let clearedBlocks = 0;
+                const blocksToClear = [];
+                const size = 5; 
+
+                for (let y = 0; y <= arena.length - size; y++) {
+                    for (let x = 0; x <= arena[0].length - size; x++) {
+                        let isSolidSquare = true;
+                        
+                        outerCheck: for (let cy = y; cy < y + size; cy++) {
+                            for (let cx = x; cx < x + size; cx++) {
+                                if (arena[cy][cx] === 0) {
+                                    isSolidSquare = false;
+                                    break outerCheck;
+                                }
+                            }
+                        }
+
+                        if (isSolidSquare) {
+                            for (let cy = y; cy < y + size; cy++) {
+                                for (let cx = x; cx < x + size; cx++) {
+                                    const isUnique = !blocksToClear.some(b => b.x === cx && b.y === cy);
+                                    if (isUnique) {
+                                        blocksToClear.push({ x: cx, y: cy });
+                                    }
+                                }
+                            }
+                            
+                            // Docinho já era exibido para limpeza 5x5
+                            showCandyEmoji(x + 2, y + 2); 
+                        }
+                    }
+                }
+
+                for (const { x, y } of blocksToClear) {
+                    if (arena[y][x] !== 0) { 
+                        arena[y][x] = 0;
+                        clearedBlocks++;
+                    }
+                }
+
+                if (clearedBlocks > 0) {
+                    score += clearedBlocks * 10; 
+                    updateScore();
+                    return true;
+                }
+                return false;
+            }
+
+            // =======================================================
+            // LÓGICA DE QUEDA E ATUALIZAÇÃO (playerDrop)
+            // =======================================================
+            function playerDrop(){ 
+                if(!gameRunning || isPaused) return; 
+                player.pos.y++; 
+                if(collide(arena,player)){ 
+                    player.pos.y--; 
+                    merge(arena,player); 
+                    
+                    let clearedBlocks = false;
+                    do {
+                        clearedBlocks = findAndClear5x5(); 
+                        if (clearedBlocks) {
+                            applyGravity();
+                        }
+                    } while(clearedBlocks); 
+
+                    arenaSweep(); 
+                    playerReset(); 
+                } 
+                dropCounter=0; 
+            }
+            
+            // =======================================================
+            // FUNÇÕES DE DESENHO E ESTADO
+            // =======================================================
+            function drawBlock(ctx,x,y,color){ ctx.fillStyle=color; ctx.fillRect(x,y,1,1); ctx.strokeStyle="#7a004d"; ctx.lineWidth=0.06; ctx.strokeRect(x+0.03,y+0.03,0.94,0.94); ctx.fillStyle="rgba(0,0,0,0.12)"; ctx.fillRect(x+0.65,y+0.65,0.32,0.32); }
+            function drawMatrix(matrix,offset,ctx=context){ matrix.forEach((row,y)=>{ row.forEach((val,x)=>{ if(val!==0) drawBlock(ctx,x+offset.x,y+offset.y,colors[val]); }); }); }
+            function draw(){ context.fillStyle="#ffe6f0"; context.fillRect(0,0,canvas.width,canvas.height); drawMatrix(arena,{x:0,y:0}); drawMatrix(player.matrix,player.pos); }
+            function drawNext(){ nextCtx.fillStyle="#ffe6f0"; nextCtx.fillRect(0,0,nextCanvas.width,nextCanvas.height); const gridW=(nextCanvas.width/20)|0; const gridH=(nextCanvas.height/20)|0; const offX=Math.max(0,((gridW-nextPiece[0].length)/2)|0); const offY=Math.max(0,((gridH-nextPiece.length)/2)|0); drawMatrix(nextPiece,{x:offX,y:offY},nextCtx); }
+
+            function updateScore(){ document.getElementById("score").innerText="Pontuação: "+score; }
+            function updateTime(){ const minutes=Math.floor(time/60); const seconds=time%60; const secDisplay=seconds<10?"0"+seconds:seconds; document.getElementById("time").innerText=`Tempo: ${minutes}:${secDisplay} min`; } 
+
+            function playerReset(){ player.matrix=nextPiece; nextPiece=createPiece(randomPiece()); player.pos.y=0; player.pos.x=(arena[0].length/2|0)-(player.matrix[0].length/2|0); if(collide(arena,player)) gameOver(); drawNext(); }
+            function gameOver(){ gameRunning=false; clearInterval(timerInterval); if(animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null; overlay.style.visibility="visible"; finalScore.innerText="Pontuação: "+score; const minutes=Math.floor(time/60); const seconds=time%60; const secDisplay=seconds<10?"0"+seconds:seconds; finalTime.innerText=`Tempo: ${minutes}:${secDisplay} min`; }
+            
+            function restartGame(){ 
+                overlay.style.visibility="hidden"; 
+                arena.forEach(row=>row.fill(0)); 
+                score=0; 
+                time=0; 
+                updateScore(); 
+                updateTime(); 
+                gameRunning=true; 
+                startTimer(); 
+                playerReset(); 
+                isPaused = false; 
+                pauseButton.innerHTML = '⏸️ Pausar'; 
+                
+                // Reinicia o loop de animação
+                lastTime = performance.now(); 
+                animationFrameId = requestAnimationFrame(update);
+            } 
+
+            let dropCounter=0; let dropInterval=1000; let lastTime=0;
+            const player={pos:{x:0,y:0},matrix:null};
+            let nextPiece=createPiece(randomPiece());
+            let animationFrameId;
+
+            function togglePause() {
+                isPaused = !isPaused;
+                
+                if (isPaused) {
+                    // Pausar o jogo
+                    if (timerInterval) clearInterval(timerInterval);
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null; // Garante que o ID da animação é limpo
+                    
+                    pauseButton.innerHTML = '▶️ Retomar';
+                    
+                    // Desenha o estado atual do jogo e o overlay de pausa
+                    draw(); 
+                    context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    context.fillRect(0, 0, 12, 20); // 12x20 é a dimensão do grid
+                    context.font = '1px Inter'; 
+                    context.fillStyle = 'white';
+                    context.textAlign = 'center';
+                    context.fillText('PAUSADO', 6, 10); // 6 é o centro X, 10 é o centro Y
+                } else {
+                    // Retomar o jogo
+                    startTimer();
+                    pauseButton.innerHTML = '⏸️ Pausar';
+                    
+                    // Zera o lastTime para evitar um grande delta time, 
+                    lastTime = performance.now(); 
+                    
+                    // Reinicia o loop de animação
+                    animationFrameId = requestAnimationFrame(update);
+                }
+            }
+
+
+            function startTimer(){ clearInterval(timerInterval); timerInterval=setInterval(()=>{ if(gameRunning && !isPaused){ time++; updateTime(); } },1000); }
+            
+            function update(timeNow=0){ 
+                if (!gameRunning || isPaused) {
+                    // Se estiver pausado ou acabou, o loop para aqui.
+                    return;
+                }
+
+                const delta=timeNow-lastTime; 
+                lastTime=timeNow; 
+                
+                dropCounter+=delta; 
+                if(dropCounter>dropInterval) playerDrop(); 
+                draw(); 
+                // Solicita o próximo frame para continuar o loop
+                animationFrameId = requestAnimationFrame(update); 
+            }
+
+            document.getElementById("restart").onclick=restartGame;
+            document.getElementById("pause-btn").onclick = togglePause;
+            
+            // Inicia o jogo
+            playerReset(); 
+            startTimer(); 
+            // A primeira chamada de update deve ser feita para iniciar o requestAnimationFrame chain
+            update(performance.now()); // Passa o tempo inicial
+
+            // Controles de teclado
+            document.addEventListener("keydown",(e)=>{ 
+                if(e.key==="p" || e.key==="P") {
+                    togglePause();
+                    return;
+                }
+                
+                if(!gameRunning || isPaused) return; 
+                
+                if(e.key==="ArrowLeft") playerMove(-1); 
+                else if(e.key==="ArrowRight") playerMove(1); 
+                else if(e.key==="ArrowDown") playerDrop(); 
+                else if(e.key==="ArrowUp") playerRotate(1); 
+            });
+            
+            // Controles de botão
+            document.getElementById("left").onclick=()=>playerMove(-1);
+            document.getElementById("right").onclick=()=>playerMove(1);
+            document.getElementById("down").onclick=()=>playerDrop();
+            document.getElementById("rotate").onclick=()=>playerRotate(1);
+        }
+    </script>
 </body>
 </html>
