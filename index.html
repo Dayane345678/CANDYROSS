@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> 🍭 Candy Ross 🍭</title>
+    <title>🍭 Candy Ross 🍭</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* ======================================================= */
@@ -17,7 +17,7 @@
             align-items: center;
             justify-content: center;
             font-family: 'Inter', sans-serif;
-            min-height: 10vh; /* Ajustado para melhor visualização em telas pequenas */
+            min-height: 10vh; 
             padding: 20px 0;
         }
         
@@ -66,23 +66,47 @@
             font-weight: bold;
             margin-bottom: 10px;
             width: 100%;
-            max-width: 280px; /* Ajuste para centralizar o layout */
+            max-width: 320px; /* Ajuste para acomodar 4 colunas */
         }
+        
+        /* Novo layout para estatísticas com 4 colunas */
         #game-stats {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             width: 100%;
-            padding: 0 20px;
+            padding: 5px 10px;
             font-size: 18px;
+            text-align: center;
+            background: #ffcce0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
+        #game-stats > div {
+            border-left: 1px solid #ff4da650;
+            padding-left: 5px;
+            margin-left: -5px;
+        }
+        #game-stats > div:first-child {
+            border-left: none;
+            padding-left: 0;
+            margin-left: 0;
+        }
+        #game-stats span:first-child {
+            font-size: 12px;
+            font-weight: normal;
+            color: #ff4da6;
+        }
+        #game-stats span:last-child {
+            font-weight: bold;
+        }
+
         #player-profile {
             display: flex;
             align-items: center;
             gap: 10px;
             padding: 5px 10px;
-            background: #ffcce0;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             font-size: 16px;
         }
         #avatar {
@@ -201,7 +225,7 @@
         
         /* Estilos do Pop-up */
         #instructions {
-            min-width: 280px; /* Aumentado para acomodar melhor o conteúdo */
+            min-width: 280px; 
             max-width: 400px;
             max-height: 90vh; 
             border: none;
@@ -345,14 +369,32 @@
     <h1 style="display:none;" id="title-game"> 🍭 Candy Ross 🍭</h1>
     <div id="top-info" style="display:none;">
         <div id="player-profile">
+            <!-- Avatar carregado (ou padrão) -->
             <img id="avatar" src="https://placehold.co/35x35/ff4da6/ffffff?text=A" alt="Avatar do Jogador">
             <span id="player-name-display">Jogador</span>
             <input type="file" id="avatar-input" accept="image/*" style="display: none;">
         </div>
+        
+        <!-- ESTATÍSTICAS DO JOGO (Pontuação e Recordes) -->
         <div id="game-stats">
-            <span id="score">Pontuação: 0</span> 
-            <span id="time">Tempo: 0:00 min</span>
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-normal">Pontos</span>
+                <span id="score">0</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-normal">Tempo</span>
+                <span id="time">0:00</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-normal text-[#ff1a8c]">Recorde</span>
+                <span id="highScore">0</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span class="text-xs font-normal text-[#ff1a8c]">Tempo Max</span>
+                <span id="bestTime">0:00</span>
+            </div>
         </div>
+
     </div>
     
     <div id="game-container" style="display:none;">
@@ -392,31 +434,29 @@
             placeholder="Digite seu nome (máx. 10)" 
             maxlength="10" 
             class="p-2 border border-[#ff4da6] rounded-md focus:outline-none focus:ring-2 focus:ring-[#ff4da6] w-full mt-2 mb-4 text-[#333]">
-        <h3><strong>BEM-VINDOS AO CANDY ROSS! Neste desafio, cada bloco equivale a um pirulito. O seu objetivo é quebrá-los.<strong></h3>
+        
+         <h3><strong>BEM-VINDOS AO CANDY ROSS! Neste desafio, cada bloco equivale a um pirulito. O seu objetivo é quebrá-los.<strong></h3>
         <p>Este é um jogo de encaixar blocos. Seu objetivo principal é completar linhas horizontais (10 pontos) e, principalmente, completar um quadrado sólido de 5x5 blocos(super pontos) em qualquer lugar da arena!</p>
 
         <h3><br><strong>Controles</strong></br></h3>
         <p><br><strong>Use as teclas de seta ou os botões na tela:</strong></br></p>
         <ul>
-            <li><strong>Seta para baixo:</strong>queda suave.</li>
-            <li><strong>Seta esquerda:</strong> Mover para a esquerda
-            <li><strong>Seta direita:</strong> Mover para a direita
+            <li><strong>Seta para baixo:</strong> queda suave.</li>
+            <li><strong>Seta esquerda:</strong> Mover para a esquerda.
+            <li><strong>Seta direita:</strong> Mover para a direita.
             <li><strong>Seta para Cima:</strong> Girar.</li>
+            <li><strong>Barra de Espaço:</strong> Pausar/Retomar o jogo.</li>
             <li><strong>Botão Pausar:</strong> Pausar/Retomar o jogo.</li>
         </ul>
-        
-        <!-- NOVA SEÇÃO: LINKS DOS DESENVOLVEDORES -->
+        <!-- SEÇÃO: LINKS DOS DESENVOLVEDORES -->
         <h3>Desenvolvedores</h3>
         <div id="dev-links">
-            <!-- Dayane345678 -->
             <a href="https://github.com/Dayane345678" target="_blank">
                 Dayane Gabriely (GitHub)
             </a>
-            <!-- bnersur -->
             <a href="https://github.com/bnersur" target="_blank">
                 Abner Ferreira (GitHub)
             </a>
-            <!-- Afromariaa -->
             <a href="https://github.com/Afromariaa" target="_blank">
                 Maria Clara Meira (GitHub)
             </a>
@@ -432,6 +472,57 @@
         let playerName = "Jogador";
         let avatarURL = "https://placehold.co/35x35/ff4da6/ffffff?text=A";
 
+        // Variáveis de Recorde
+        let highScore = 0;
+        let bestTimeSeconds = 0;
+
+        // =======================================================
+        // FUNÇÕES DE PERSISTÊNCIA E UTILIDADE
+        // =======================================================
+
+        // Formata o tempo (segundos para M:SS)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            const secDisplay = sec < 10 ? "0" + sec : sec;
+            return `${minutes}:${secDisplay}`;
+        }
+        
+        // Carrega Pontuação e Tempo Recorde do localStorage
+        function loadRecords(highScoreDisplay, bestTimeDisplay) {
+            highScore = parseInt(localStorage.getItem('blockross_highScore') || '0', 10);
+            bestTimeSeconds = parseInt(localStorage.getItem('blockross_bestTime') || '0', 10);
+            highScoreDisplay.innerText = highScore;
+            bestTimeDisplay.innerText = formatTime(bestTimeSeconds);
+        }
+
+        // Salva Pontuação e Tempo Recorde no localStorage
+        function saveRecord(newScore, newTimeSeconds, highScoreDisplay, bestTimeDisplay) {
+            if (newScore > highScore) {
+                highScore = newScore;
+                localStorage.setItem('blockross_highScore', highScore);
+                highScoreDisplay.innerText = highScore;
+            }
+            
+            // Recorde de tempo é o tempo mais longo (maior número de segundos)
+            if (newTimeSeconds > bestTimeSeconds) {
+                bestTimeSeconds = newTimeSeconds;
+                localStorage.setItem('blockross_bestTime', bestTimeSeconds);
+                bestTimeDisplay.innerText = formatTime(bestTimeSeconds);
+            }
+        }
+        
+        // Converte o arquivo de imagem para Base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+
         document.addEventListener('DOMContentLoaded', () => {
             const instructions = document.getElementById('instructions');
             const closeInstructionsBtn = document.getElementById('close'); 
@@ -441,32 +532,49 @@
             const playerNameInput = document.getElementById('playerNameInput');
             const avatarImg = document.getElementById('avatar');
             const avatarInput = document.getElementById('avatar-input');
+            const highScoreDisplay = document.getElementById('highScore');
+            const bestTimeDisplay = document.getElementById('bestTime');
             
-            // 1. Inicializa o nome do jogador no input e display
-            if (playerNameInput) playerNameInput.value = playerName;
-            if (document.getElementById('player-name-display')) document.getElementById('player-name-display').innerText = playerName;
+            // 1. CARREGAR RECORDES
+            loadRecords(highScoreDisplay, bestTimeDisplay);
 
-            // 2. Lógica de Avatar
+            // 2. CARREGAR AVATAR SALVO
+            const savedAvatar = localStorage.getItem('blockross_avatar');
+            if (savedAvatar) {
+                avatarURL = savedAvatar;
+                avatarImg.src = avatarURL;
+            }
+
+            // 3. Lógica de Avatar (Salvar com Base64)
             if (avatarImg && avatarInput) {
                 avatarImg.onclick = () => avatarInput.click();
-                avatarInput.onchange = (event) => {
+                avatarInput.onchange = async (event) => {
                     const file = event.target.files[0];
-                    if (file) {
-                        const newAvatarURL = URL.createObjectURL(file);
-                        avatarURL = newAvatarURL;
-                        avatarImg.src = newAvatarURL;
+                    if (file && file.type.startsWith('image/')) {
+                        try {
+                            const base64Image = await fileToBase64(file);
+                            avatarURL = base64Image;
+                            avatarImg.src = base64Image;
+                            localStorage.setItem('blockross_avatar', base64Image);
+                        } catch (error) {
+                            console.error("Erro ao converter arquivo para Base64:", error);
+                        }
                     }
                 };
             }
+            
+            // 4. Inicializa o nome do jogador no input e display
+            if (playerNameInput) playerNameInput.value = playerName;
+            if (document.getElementById('player-name-display')) document.getElementById('player-name-display').innerText = playerName;
 
-            // 3. Lógica de Pop-up (Abrir e Fechar)
+
+            // 5. Lógica de Pop-up (Abrir e Fechar)
             if(showInstructionsBtn) showInstructionsBtn.addEventListener('click', () => { if(instructions) instructions.showModal(); });
-            // Abre as instruções 2 segundos após o carregamento, se a tela inicial estiver visível.
-            setTimeout(() => { if(instructions && startScreen.style.display !== 'none'){ instructions.showModal(); } }, 2000);
+            setTimeout(() => { if(instructions && startScreen.style.display !== 'none'){ instructions.showModal(); } }, 250);
             if (closeInstructionsBtn && instructions) closeInstructionsBtn.addEventListener('click', () => { instructions.close(); });
             if (instructions) instructions.addEventListener('click', (event) => { if (event.target === instructions) { instructions.close(); } });
 
-            // 4. Lógica da Tela Inicial
+            // 6. Lógica da Tela Inicial
             playBtn.onclick = () => {
                 // Captura o nome inserido
                 const name = playerNameInput.value.trim();
@@ -479,14 +587,16 @@
                 document.getElementById("game-container").style.display = "flex";
                 document.getElementById("controls").style.display = "grid";
                 gameActive = true; 
-                startGame();
+                
+                // Inicia o jogo, passando os elementos de recorde para que a lógica de recorde funcione
+                startGame(highScoreDisplay, bestTimeDisplay);
             };
         });
 
         // =======================================================
         // LÓGICA DO JOGO (FUNÇÃO STARTGAME)
         // =======================================================
-        function startGame() {
+        function startGame(highScoreDisplay, bestTimeDisplay) {
             const canvas = document.getElementById('tetris'); 
             const context = canvas.getContext('2d');
             context.scale(20,20);
@@ -538,15 +648,12 @@
                     arena.splice(y,1); 
                     arena.unshift(new Array(arena[0].length).fill(0)); 
                     
-                    // NOVO: Mostra o emoji de docinho para limpeza de linha
-                    // Mostra no centro da linha limpa (coluna 6 do grid 12x20)
                     showCandyEmoji(6, y); 
 
                     linesCleared++; 
                     y++; // Recheca a linha que acabou de descer
                 } 
                 
-                // Pontuação fixa: 10 pontos por linha, conforme solicitado
                 if (linesCleared > 0) {
                     score += linesCleared * 10; 
                 }
@@ -619,7 +726,6 @@
                                 }
                             }
                             
-                            // Docinho já era exibido para limpeza 5x5
                             showCandyEmoji(x + 2, y + 2); 
                         }
                     }
@@ -672,11 +778,24 @@
             function draw(){ context.fillStyle="#ffe6f0"; context.fillRect(0,0,canvas.width,canvas.height); drawMatrix(arena,{x:0,y:0}); drawMatrix(player.matrix,player.pos); }
             function drawNext(){ nextCtx.fillStyle="#ffe6f0"; nextCtx.fillRect(0,0,nextCanvas.width,nextCanvas.height); const gridW=(nextCanvas.width/20)|0; const gridH=(nextCanvas.height/20)|0; const offX=Math.max(0,((gridW-nextPiece[0].length)/2)|0); const offY=Math.max(0,((gridH-nextPiece.length)/2)|0); drawMatrix(nextPiece,{x:offX,y:offY},nextCtx); }
 
-            function updateScore(){ document.getElementById("score").innerText="Pontuação: "+score; }
-            function updateTime(){ const minutes=Math.floor(time/60); const seconds=time%60; const secDisplay=seconds<10?"0"+seconds:seconds; document.getElementById("time").innerText=`Tempo: ${minutes}:${secDisplay} min`; } 
+            function updateScore(){ document.getElementById("score").innerText=score; }
+            function updateTime(){ document.getElementById("time").innerText=formatTime(time); } 
 
             function playerReset(){ player.matrix=nextPiece; nextPiece=createPiece(randomPiece()); player.pos.y=0; player.pos.x=(arena[0].length/2|0)-(player.matrix[0].length/2|0); if(collide(arena,player)) gameOver(); drawNext(); }
-            function gameOver(){ gameRunning=false; clearInterval(timerInterval); if(animationFrameId) cancelAnimationFrame(animationFrameId); animationFrameId = null; overlay.style.visibility="visible"; finalScore.innerText="Pontuação: "+score; const minutes=Math.floor(time/60); const seconds=time%60; const secDisplay=seconds<10?"0"+seconds:seconds; finalTime.innerText=`Tempo: ${minutes}:${secDisplay} min`; }
+            
+            function gameOver(){ 
+                gameRunning=false; 
+                clearInterval(timerInterval); 
+                if(animationFrameId) cancelAnimationFrame(animationFrameId); 
+                animationFrameId = null; 
+
+                // NOVO: Salva o recorde antes de exibir o overlay
+                saveRecord(score, time, highScoreDisplay, bestTimeDisplay);
+
+                overlay.style.visibility="visible"; 
+                finalScore.innerText="Pontuação: "+score; 
+                finalTime.innerText=`Tempo: ${formatTime(time)} min`; 
+            }
             
             function restartGame(){ 
                 overlay.style.visibility="hidden"; 
@@ -708,24 +827,23 @@
                     // Pausar o jogo
                     if (timerInterval) clearInterval(timerInterval);
                     if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                    animationFrameId = null; // Garante que o ID da animação é limpo
+                    animationFrameId = null; 
                     
                     pauseButton.innerHTML = '▶️ Retomar';
                     
-                    // Desenha o estado atual do jogo e o overlay de pausa
+                    // Desenha o overlay de pausa
                     draw(); 
                     context.fillStyle = 'rgba(0, 0, 0, 0.5)';
-                    context.fillRect(0, 0, 12, 20); // 12x20 é a dimensão do grid
+                    context.fillRect(0, 0, 12, 20); 
                     context.font = '1px Inter'; 
                     context.fillStyle = 'white';
                     context.textAlign = 'center';
-                    context.fillText('PAUSADO', 6, 10); // 6 é o centro X, 10 é o centro Y
+                    context.fillText('PAUSADO', 6, 10); 
                 } else {
                     // Retomar o jogo
                     startTimer();
                     pauseButton.innerHTML = '⏸️ Pausar';
                     
-                    // Zera o lastTime para evitar um grande delta time, 
                     lastTime = performance.now(); 
                     
                     // Reinicia o loop de animação
@@ -738,7 +856,6 @@
             
             function update(timeNow=0){ 
                 if (!gameRunning || isPaused) {
-                    // Se estiver pausado ou acabou, o loop para aqui.
                     return;
                 }
 
@@ -748,7 +865,6 @@
                 dropCounter+=delta; 
                 if(dropCounter>dropInterval) playerDrop(); 
                 draw(); 
-                // Solicita o próximo frame para continuar o loop
                 animationFrameId = requestAnimationFrame(update); 
             }
 
@@ -758,8 +874,7 @@
             // Inicia o jogo
             playerReset(); 
             startTimer(); 
-            // A primeira chamada de update deve ser feita para iniciar o requestAnimationFrame chain
-            update(performance.now()); // Passa o tempo inicial
+            update(performance.now()); 
 
             // Controles de teclado
             document.addEventListener("keydown",(e)=>{ 
