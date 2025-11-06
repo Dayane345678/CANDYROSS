@@ -40,7 +40,7 @@
         // ***************************************************************
         // PASSO CRUCIAL: INSIRA A URL RAW (BRUTA) DO SEU ARQUIVO DE ÁUDIO AQUI!
         // EXEMPLO: https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPOSITORIO/master/musica.mp3
-        const AUDIO_URL = "https://files.catbox.moe/2q6d5i.mp3" ; 
+        const AUDIO_URL = "https://github.com/Dayane345678/CANDYROSS/blob/main/music%20boa.mp3" ; 
         // ***************************************************************
         
         // Sweet/Candy Synth: Usa onda triangular para um som mais suave, como um sino doce ou caixa de música.
@@ -94,7 +94,7 @@
             }
         }
         function startBackgroundMusic() {
-            if (AUDIO_URL === "https://files.catbox.moe/2q6d5i.mp3") {
+            if (AUDIO_URL === "https://github.com/Dayane345678/CANDYROSS/blob/main/music%20boa.mp3") {
                  console.warn("Música de fundo não iniciada. Por favor, insira a URL RAW do seu arquivo de áudio.");
                  return;
             }
