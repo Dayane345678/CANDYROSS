@@ -1,1 +1,144 @@
 
+        /* ======================================================= */
+        /* ESTILOS BASE DO JOGO */
+        /* ======================================================= */
+        body {
+            margin: 0;
+            background-color: #ffe6f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            min-height: 10vh; 
+            padding: 20px 0;
+        }
+        
+        /* Tela inicial */
+        #start-screen {
+            position: fixed;
+            top:0;
+            left:0;
+            width:100vw;
+            height:100vh;
+            background-color:#ffe6f0;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            z-index:100;
+        }
+        #start-screen h1 {
+            font-size: clamp(30px, 8vw, 50px);
+            color: #ff4da6;
+            margin-bottom: 40px;
+        }
+        #play-btn {
+            width: 150px;
+            height: 150px;
+            font-size: 24px;
+            background-color: #ff66b2;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px #cc0066;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        #play-btn:hover { background-color: #ff80c0; }
+        #play-btn:active { transform: translateY(2px); box-shadow: 0 2px #cc0066; }
+
+        h1 { color: #ff4da6; margin: 10px 0; }
+
+        /* Estilo para o controle de volume na tela inicial */
+        #volume-control-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            color: #cc0066;
+            font-weight: bold;
+        }
+        #volume-slider {
+            width: 150px;
+            accent-color: #ff4da6;
+        }
+
+        #top-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: #cc0066;
+            font-weight: bold;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 320px;
+        }
+        
+        /* Novo layout para estatísticas com 4 colunas */
+        #game-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            padding: 5px 10px;
+            font-size: 18px;
+            text-align: center;
+            background: #ffcce0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        #game-stats > div {
+            border-left: 1px solid #ff4da650;
+            padding-left: 5px;
+            margin-left: -5px;
+        }
+        #game-stats > div:first-child {
+            border-left: none;
+            padding-left: 0;
+            margin-left: 0;
+        }
+        #game-stats span:first-child {
+            font-size: 12px;
+            font-weight: normal;
+            color: #ff4da6;
+        }
+        #game-stats span:last-child {
+            font-weight: bold;
+        }
+
+        #player-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        #avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ff4da6;
+            cursor: pointer;
+        }
+        #player-name-display {
+            font-weight: bold;
+            color: #cc0066;
+        }
+
+
+        #game-container {
+            position: relative;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        canvas {
+            background-color: #ffb3d9;
+            border: 5px solid #ff4da6;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+       
